@@ -6,21 +6,20 @@ import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView countTextView;
+    private LinearLayout floatingButtonsLayout;
     private int count = 0;
     private static final String PREFS_NAME = "ClickCounterPrefs";
     private static final String KEY_COUNT = "count";
@@ -32,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         countTextView = findViewById(R.id.countTextView);
+        floatingButtonsLayout = findViewById(R.id.floatingButtonsLayout);
 
         // 设置初始文本大小为屏幕高度的 2/3
         setInitialTextSize();
@@ -42,13 +42,28 @@ public class MainActivity extends AppCompatActivity {
         rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                incrementCount();
+                if (floatingButtonsLayout.getVisibility() == View.VISIBLE) {
+                    floatingButtonsLayout.setVisibility(View.GONE); // 隐藏悬浮按钮
+                }
+                else {
+                    increaseCount();
+                }
             }
         });
 
         rootLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                floatingButtonsLayout.setVisibility(View.VISIBLE); // 显示悬浮按钮
+                return true; // 返回 true 表示已处理长按事件
+            }
+        });
+
+        // 设置悬浮按钮的点击事件
+        Button buttonReset = findViewById(R.id.buttonReset);
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("确认清零")
                         .setMessage("是否将计数清零？")
@@ -56,12 +71,20 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 resetCount();
+                                floatingButtonsLayout.setVisibility(View.GONE); // 隐藏悬浮按钮
                                 Toast.makeText(MainActivity.this, "计数已清零", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setNegativeButton("否", null)
                         .show();
-                return true; // 返回 true 表示已处理长按事件
+            }
+        });
+
+        Button buttonDecrease = findViewById(R.id.buttonDecrease);
+        buttonDecrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decreaseCount();
             }
         });
     }
@@ -70,11 +93,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            incrementCount(); // 按下音量加键时增加计数
+            increaseCount(); // 按下音量加键时增加计数
             return true; // 返回 true 表示已处理按键事件
         }
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            decrementCount(); // 按下音量减键时减小计数
+            decreaseCount(); // 按下音量减键时减小计数
             return true; // 返回 true 表示已处理按键事件
         }
         return super.onKeyDown(keyCode, event);
@@ -135,12 +158,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 增加计数
-    private void incrementCount() {
+    private void increaseCount() {
         setCount(count + 1);
     }
 
     // 减小计数
-    private void decrementCount() {
+    private void decreaseCount() {
         if (count > 0) {
             setInitialTextSize();
             setCount(count - 1);
