@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,10 +42,7 @@ public class MainActivity extends AppCompatActivity {
         rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                count++;
-                countTextView.setText(String.valueOf(count));
-                adjustTextSize(); // 调整文本大小
-                saveCount(); // 保存计数
+                incrementCount();
             }
         });
 
@@ -57,10 +55,7 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("是", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                count = 0; // 清零
-                                countTextView.setText(String.valueOf(count));
-                                adjustTextSize(); // 调整文本大小
-                                saveCount(); // 保存计数
+                                resetCount();
                                 Toast.makeText(MainActivity.this, "计数已清零", Toast.LENGTH_SHORT).show();
                             }
                         })
@@ -69,6 +64,16 @@ public class MainActivity extends AppCompatActivity {
                 return true; // 返回 true 表示已处理长按事件
             }
         });
+    }
+
+    // 监听音量加键
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            incrementCount(); // 按下音量加键时增加计数
+            return true; // 返回 true 表示已处理按键事件
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -116,6 +121,22 @@ public class MainActivity extends AppCompatActivity {
             textWidth = paint.measureText(text);
         }
 //        Log.d("TextWidth", "Final text width: " + textWidth + " px");
+    }
+
+    // 增加计数
+    private void incrementCount() {
+        count++;
+        countTextView.setText(String.valueOf(count));
+        adjustTextSize(); // 调整文本大小
+        saveCount(); // 保存计数
+    }
+
+    // 清零计数
+    private void resetCount() {
+        count = 0;
+        countTextView.setText(String.valueOf(count));
+        adjustTextSize(); // 调整文本大小
+        saveCount(); // 保存计数
     }
 
     // 保存计数到 SharedPreferences
