@@ -33,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
 
         countTextView = findViewById(R.id.countTextView);
 
-        // 从 SharedPreferences 恢复计数
-        restoreCount();
         // 设置初始文本大小为屏幕高度的 2/3
         setInitialTextSize();
+        // 从 SharedPreferences 恢复计数
+        restoreCount();
 
         View rootLayout = findViewById(R.id.rootLayout);
         rootLayout.setOnClickListener(new View.OnClickListener() {
@@ -123,20 +123,21 @@ public class MainActivity extends AppCompatActivity {
 //        Log.d("TextWidth", "Final text width: " + textWidth + " px");
     }
 
-    // 增加计数
-    private void incrementCount() {
-        count++;
-        countTextView.setText(String.valueOf(count));
+    private void setCount(int cnt) {
+        count = cnt;
+        countTextView.setText(String.valueOf(cnt));
         adjustTextSize(); // 调整文本大小
         saveCount(); // 保存计数
     }
 
+    // 增加计数
+    private void incrementCount() {
+        setCount(count + 1);
+    }
+
     // 清零计数
     private void resetCount() {
-        count = 0;
-        countTextView.setText(String.valueOf(count));
-        adjustTextSize(); // 调整文本大小
-        saveCount(); // 保存计数
+        setCount(0);
     }
 
     // 保存计数到 SharedPreferences
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     // 从 SharedPreferences 恢复计数
     private void restoreCount() {
         SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        count = preferences.getInt(KEY_COUNT, 0); // 如果不存在，默认值为 0
+        setCount(preferences.getInt(KEY_COUNT, 0)); // 如果不存在，默认值为 0
         countTextView.setText(String.valueOf(count));
     }
 }
