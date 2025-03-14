@@ -1,5 +1,7 @@
 package com.example.counter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,6 +45,28 @@ public class MainActivity extends AppCompatActivity {
                 countTextView.setText(String.valueOf(count));
                 adjustTextSize(); // 调整文本大小
                 saveCount(); // 保存计数
+            }
+        });
+
+        rootLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("确认清零")
+                        .setMessage("是否将计数清零？")
+                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                count = 0; // 清零
+                                countTextView.setText(String.valueOf(count));
+                                adjustTextSize(); // 调整文本大小
+                                saveCount(); // 保存计数
+                                Toast.makeText(MainActivity.this, "计数已清零", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("否", null)
+                        .show();
+                return true; // 返回 true 表示已处理长按事件
             }
         });
     }
