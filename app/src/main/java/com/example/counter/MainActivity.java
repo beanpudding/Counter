@@ -73,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
             incrementCount(); // 按下音量加键时增加计数
             return true; // 返回 true 表示已处理按键事件
         }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            decrementCount(); // 按下音量减键时减小计数
+            return true; // 返回 true 表示已处理按键事件
+        }
         return super.onKeyDown(keyCode, event);
     }
 
@@ -133,6 +137,14 @@ public class MainActivity extends AppCompatActivity {
     // 增加计数
     private void incrementCount() {
         setCount(count + 1);
+    }
+
+    // 减小计数
+    private void decrementCount() {
+        if (count > 0) {
+            setInitialTextSize();
+            setCount(count - 1);
+        }
     }
 
     // 清零计数
