@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (floatingButtonsLayout.getVisibility() == View.VISIBLE) {
-                    floatingButtonsLayout.setVisibility(View.GONE); // 隐藏悬浮按钮
+                    hideFloatingButtons();
                 }
                 else {
                     increaseCount();
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         rootLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                floatingButtonsLayout.setVisibility(View.VISIBLE); // 显示悬浮按钮
+                showFloatingButtons();
                 return true; // 返回 true 表示已处理长按事件
             }
         });
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 resetCount();
-                                floatingButtonsLayout.setVisibility(View.GONE); // 隐藏悬浮按钮
+                                hideFloatingButtons();
                                 Toast.makeText(MainActivity.this, "计数已清零", Toast.LENGTH_SHORT).show();
                             }
                         })
@@ -188,5 +190,28 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         setCount(preferences.getInt(KEY_COUNT, 0)); // 如果不存在，默认值为 0
         countTextView.setText(String.valueOf(count));
+    }
+
+    private void showFloatingButtons() {
+        floatingButtonsLayout.setVisibility(View.VISIBLE);
+        Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);
+        floatingButtonsLayout.startAnimation(slideIn);
+    }
+
+    private void hideFloatingButtons() {
+        Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom);
+        slideOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                floatingButtonsLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+        floatingButtonsLayout.startAnimation(slideOut);
     }
 }
