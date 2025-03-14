@@ -1,5 +1,6 @@
 package com.example.counter;
 
+import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -17,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView countTextView;
     private int count = 0;
+    private static final String PREFS_NAME = "ClickCounterPrefs";
+    private static final String KEY_COUNT = "count";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
         countTextView = findViewById(R.id.countTextView);
 
+        // 从 SharedPreferences 恢复计数
+        restoreCount();
         // 设置初始文本大小为屏幕高度的 2/3
         setInitialTextSize();
 
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 count++;
                 countTextView.setText(String.valueOf(count));
                 adjustTextSize(); // 调整文本大小
+                saveCount(); // 保存计数
             }
         });
     }
@@ -85,5 +91,20 @@ public class MainActivity extends AppCompatActivity {
             textWidth = paint.measureText(text);
         }
 //        Log.d("TextWidth", "Final text width: " + textWidth + " px");
+    }
+
+    // 保存计数到 SharedPreferences
+    private void saveCount() {
+        SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(KEY_COUNT, count);
+        editor.apply(); // 异步保存
+    }
+
+    // 从 SharedPreferences 恢复计数
+    private void restoreCount() {
+        SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        count = preferences.getInt(KEY_COUNT, 0); // 如果不存在，默认值为 0
+        countTextView.setText(String.valueOf(count));
     }
 }
