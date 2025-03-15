@@ -65,7 +65,13 @@ public class MainActivity extends AppCompatActivity {
         rootLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                showFloatingButtons();
+                if (floatingButtonsLayout.getVisibility() != View.VISIBLE) {
+                    showFloatingButtons();
+                }
+                else {
+                    handler.removeCallbacks(hideButtonsRunnable); // 移除之前的任务
+                    handler.postDelayed(hideButtonsRunnable, 5000); // 重新启动 5 秒计时
+                }
                 return true; // 返回 true 表示已处理长按事件
             }
         });
