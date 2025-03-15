@@ -10,8 +10,8 @@ android {
         applicationId "com.example.counter"
         minSdk 24
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode getGitCommitCount()
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,4 +37,9 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+}
+
+def getGitCommitCount() {
+    def process = "git rev-list --count HEAD".execute()
+    return process.text.toInteger()
 }

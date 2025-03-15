@@ -1,5 +1,6 @@
 package com.example.counter;
 
+import android.content.pm.PackageManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView versionTextView;
     private TextView countTextView;
     private LinearLayout floatingButtonsLayout;
     private int count = 0;
@@ -35,11 +37,26 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private String getVersionName() {
+        try {
+            return getPackageManager()
+                    .getPackageInfo(getPackageName(), 0)
+                    .versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "Unknown";
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        // 设置版本名称
+        versionTextView = findViewById(R.id.versionTextView);
+        versionTextView.setText("v" + getVersionName());
 
         countTextView = findViewById(R.id.countTextView);
         floatingButtonsLayout = findViewById(R.id.floatingButtonsLayout);
@@ -216,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFloatingButtons() {
+        versionTextView.setVisibility(View.VISIBLE);
         floatingButtonsLayout.setVisibility(View.VISIBLE);
         Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);
         floatingButtonsLayout.startAnimation(slideIn);
@@ -232,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                versionTextView.setVisibility(View.GONE);
                 floatingButtonsLayout.setVisibility(View.GONE);
             }
 
