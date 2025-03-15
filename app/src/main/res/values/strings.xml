@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Counter</string>
+    <string name="reset_button">Reset</string>
+    <string name="decrease_button">-1</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="confirm_zeroing_alertDialog_title">Confirm zeroing</string>
+    <string name="confirm_zeroing_alertDialog_message">Do you want to reset the count to zero?</string>
+    <string name="toast_count_cleared_to_zero">Count cleared to zero</string>
 </resources>

@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">计数器</string>
+    <string name="reset_button">重置</string>
+    <string name="decrease_button">-1</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="confirm_zeroing_alertDialog_title">确认清零</string>
+    <string name="confirm_zeroing_alertDialog_message">是否将计数清零？</string>
+    <string name="toast_count_cleared_to_zero">计数已清零</string>
+</resources>

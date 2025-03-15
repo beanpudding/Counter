@@ -77,17 +77,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 handler.removeCallbacks(hideButtonsRunnable); // 移除之前的任务
                 new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("确认清零")
-                        .setMessage("是否将计数清零？")
-                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                        .setTitle(getString(R.string.confirm_zeroing_alertDialog_title))
+                        .setMessage(getString(R.string.confirm_zeroing_alertDialog_message))
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 resetCount();
                                 hideFloatingButtons();
-                                Toast.makeText(MainActivity.this, "计数已清零", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, getString(R.string.toast_count_cleared_to_zero), Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 handler.postDelayed(hideButtonsRunnable, 5000); // 重新启动 5 秒计时
