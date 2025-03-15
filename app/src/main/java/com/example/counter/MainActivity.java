@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,6 +26,14 @@ public class MainActivity extends AppCompatActivity {
     private int count = 0;
     private static final String PREFS_NAME = "ClickCounterPrefs";
     private static final String KEY_COUNT = "count";
+
+    private Handler handler = new Handler(); // 用于延时操作
+    private Runnable hideButtonsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            hideFloatingButtons(); // 5 秒后隐藏悬浮按钮
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                handler.removeCallbacks(hideButtonsRunnable); // 移除之前的任务
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("确认清零")
                         .setMessage("是否将计数清零？")
@@ -77,7 +87,12 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "计数已清零", Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setNegativeButton("否", null)
+                        .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                handler.postDelayed(hideButtonsRunnable, 5000); // 重新启动 5 秒计时
+                            }
+                        })
                         .show();
             }
         });
@@ -86,7 +101,9 @@ public class MainActivity extends AppCompatActivity {
         buttonDecrease.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                handler.removeCallbacks(hideButtonsRunnable); // 移除之前的任务
                 decreaseCount();
+                handler.postDelayed(hideButtonsRunnable, 5000); // 重新启动 5 秒计时
             }
         });
     }
@@ -196,6 +213,9 @@ public class MainActivity extends AppCompatActivity {
         floatingButtonsLayout.setVisibility(View.VISIBLE);
         Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);
         floatingButtonsLayout.startAnimation(slideIn);
+        // 延迟 5 秒后隐藏悬浮按钮
+        handler.removeCallbacks(hideButtonsRunnable); // 移除之前的任务
+        handler.postDelayed(hideButtonsRunnable, 5000); // 重新启动 5 秒计时
     }
 
     private void hideFloatingButtons() {
@@ -213,5 +233,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAnimationRepeat(Animation animation) {}
         });
         floatingButtonsLayout.startAnimation(slideOut);
+        // 移除未执行的延时任务
+        handler.removeCallbacks(hideButtonsRunnable);
     }
 }
