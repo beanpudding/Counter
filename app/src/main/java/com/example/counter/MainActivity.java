@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,6 +24,10 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private TextView versionTextView;
+    private int clickCount = 0;
+    private long firstClickTime = 0;
+    private int versionCode;
+    private String versionName;
     private TextView countTextView;
     private LinearLayout floatingButtonsLayout;
     private int count = 0;
@@ -37,6 +42,16 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private int getVersionCode() {
+        try {
+            return getPackageManager()
+                    .getPackageInfo(getPackageName(), 0)
+                    .versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return -1; // 返回 -1 表示获取失败
+        }
+    }
     private String getVersionName() {
         try {
             return getPackageManager()
@@ -54,9 +69,33 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        // 获取版本名称和版本代码
+        versionName = getVersionName();
+        versionCode = getVersionCode();
+
         // 设置版本名称
         versionTextView = findViewById(R.id.versionTextView);
-        versionTextView.setText("v" + getVersionName());
+        versionTextView.setText("v" + versionName);
+        versionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long currentTime = SystemClock.elapsedRealtime();
+
+                if (clickCount == 0) {
+                    firstClickTime = currentTime;
+                } else if (currentTime - firstClickTime > 3000) {
+                    clickCount = 0;
+                    firstClickTime = currentTime;
+                }
+
+                clickCount++;
+
+                if (clickCount >= 10) {
+                    versionTextView.setText("Version Code: " + versionCode);
+                    clickCount = 0;
+                }
+            }
+        });
 
         countTextView = findViewById(R.id.countTextView);
         floatingButtonsLayout = findViewById(R.id.floatingButtonsLayout);
@@ -233,6 +272,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFloatingButtons() {
+        clickCount = 0;
+        versionTextView.setText("v" + versionName);
         versionTextView.setVisibility(View.VISIBLE);
         floatingButtonsLayout.setVisibility(View.VISIBLE);
         Animation slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);
