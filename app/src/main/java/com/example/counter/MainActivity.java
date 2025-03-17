@@ -243,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void hideFloatingButtons() {
+        versionTextView.setVisibility(View.GONE);
         Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom);
         slideOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -250,7 +251,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                versionTextView.setVisibility(View.GONE);
                 floatingButtonsLayout.setVisibility(View.GONE);
             }
 
