@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private String versionName;
     private TextView countTextView;
     private LinearLayout floatingButtonsLayout;
+    private boolean isHiding = false; // 标志位，表示是否正在执行隐藏动画
     private int count = 0;
     private static final String PREFS_NAME = "ClickCounterPrefs";
     private static final String KEY_COUNT = "count";
@@ -228,7 +229,6 @@ public class MainActivity extends AppCompatActivity {
             paint.setTextSize(textSize);
             textWidth = paint.measureText(text);
         }
-//        Log.d("TextWidth", "Final text width: " + textWidth + " px");
     }
 
     private void setCount(int cnt) {
@@ -272,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFloatingButtons() {
+        isHiding = false; // 重置标志
         clickCount = 0;
         versionTextView.setText("v" + versionName);
         versionTextView.setVisibility(View.VISIBLE);
@@ -284,6 +285,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void hideFloatingButtons() {
+        if (isHiding) {
+            return; // 如果正在执行隐藏动画，直接返回
+        }
+        isHiding = true; // 标记为正在执行隐藏动画
+
         versionTextView.setVisibility(View.GONE);
         Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom);
         slideOut.setAnimationListener(new Animation.AnimationListener() {
@@ -293,6 +299,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 floatingButtonsLayout.setVisibility(View.GONE);
+                isHiding = false; // 标记为动画结束
             }
 
             @Override
