@@ -1,4 +1,4 @@
-package com.example.counter;
+package com.github.beanpudding.counter;
 
 import org.junit.Test;
 

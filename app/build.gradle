@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.counter'
+    namespace 'com.github.beanpudding.counter'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.counter"
+        applicationId "com.github.beanpudding.counter"
         minSdk 24
         targetSdk 34
         versionCode getGitCommitCount()
