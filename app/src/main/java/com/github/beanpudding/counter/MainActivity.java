@@ -113,9 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 if (floatingButtonsLayout.getVisibility() == View.VISIBLE) {
                     hideFloatingButtons();
                 }
-                else {
-                    increaseCount();
-                }
+                increaseCount();
             }
         });
 
