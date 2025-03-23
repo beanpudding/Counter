@@ -250,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
     // 清零计数
     private void resetCount() {
+        setInitialTextSize();
         setCount(0);
     }
 
