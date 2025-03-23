@@ -229,30 +229,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setCount(int cnt) {
+        if (cnt < 0) cnt = 0;
+        if (cnt < count) setInitialTextSize();
         count = cnt;
-        countTextView.setText(String.valueOf(cnt));
+        countTextView.setText(String.valueOf(count));
         adjustTextSize(); // 调整文本大小
         saveCount(); // 保存计数
     }
 
     // 增加计数
-    private void increaseCount() {
-        setCount(count + 1);
-    }
+    private void increaseCount() { setCount(count + 1); }
 
     // 减小计数
-    private void decreaseCount() {
-        if (count > 0) {
-            setInitialTextSize();
-            setCount(count - 1);
-        }
-    }
+    private void decreaseCount() { setCount(count - 1); }
 
     // 清零计数
-    private void resetCount() {
-        setInitialTextSize();
-        setCount(0);
-    }
+    private void resetCount() { setCount(0); }
 
     // 保存计数到 SharedPreferences
     private void saveCount() {
