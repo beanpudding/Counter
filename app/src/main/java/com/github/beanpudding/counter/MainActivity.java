@@ -192,8 +192,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        count = savedInstanceState.getInt("count");
-        countTextView.setText(String.valueOf(count));
+        setCount(savedInstanceState.getInt("count"));
     }
 
     // 设置初始文本大小为屏幕高度的 2/3
@@ -266,7 +265,6 @@ public class MainActivity extends AppCompatActivity {
     private void restoreCount() {
         SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         setCount(preferences.getInt(KEY_COUNT, 0)); // 如果不存在，默认值为 0
-        countTextView.setText(String.valueOf(count));
     }
 
     private void showFloatingButtons() {
